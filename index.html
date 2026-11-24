@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Level 11: Do You Love Me?</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: #21183d;
+  color: #fff1fb;
+  font-family: 'Press Start 2P', monospace;
+  text-align: center;
+  overflow: hidden;
+}
+
+.game {
+  width: 100%;
+  max-width: 430px;
+  padding: 27px 20px;
+  background: #38245c;
+  border: 5px solid #f5a6e6;
+  box-shadow: 0 0 0 5px #17112e, 0 0 30px #e77bdb88;
+  position: relative;
+}
+
+h1 {
+  font-size: 17px;
+  line-height: 1.8;
+  color: #ffb9ed;
+  text-shadow: 3px 3px #9c479b;
+}
+
+.heart {
+  font-size: 55px;
+  margin: 20px;
+  animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+  to { transform: scale(1.15); }
+}
+
+.message {
+  font-size: 12px;
+  line-height: 2.2;
+  min-height: 85px;
+  margin: 20px 0;
+}
+
+button {
+  font-family: inherit;
+  font-size: 10px;
+  padding: 16px 12px;
+  border: 3px solid white;
+  cursor: pointer;
+  margin: 7px;
+  min-width: 115px;
+  box-shadow: 4px 4px #17112e;
+}
+
+.yes {
+  background: #ff8dcf;
+  color: #421b50;
+}
+
+.no {
+  background: #a78bfa;
+  color: #24153d;
+}
+
+button:active {
+  transform: translate(3px,3px);
+  box-shadow: 1px 1px #17112e;
+}
+
+.buttons {
+  min-height: 90px;
+  position: relative;
+}
+
+#noBtn.running {
+  position: absolute;
+  left: 50%;
+  top: 5px;
+  transform: translateX(-50%);
+}
+
+.small {
+  font-size: 8px;
+  line-height: 2;
+  color: #e9b8ee;
+}
+
+.hidden { display: none; }
+
+#hearts {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.floating {
+  position: absolute;
+  bottom: -30px;
+  animation: floatUp 3s linear forwards;
+  font-size: 22px;
+}
+
+@keyframes floatUp {
+  to { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+<div id="hearts"></div>
+
+<main class="game">
+  <div class="small">♡ PLAYER 1 · LOVE QUEST ♡</div>
+  <h1>LEVEL 11</h1>
+  <div class="heart">💗</div>
+
+  <div id="message" class="message">
+    WELCOME TO YOUR<br>LOVE GAME!<br><br>
+    ARE YOU READY?
+  </div>
+
+  <div id="buttons" class="buttons">
+    <button class="yes" id="startBtn" onclick="startGame()">
+      START GAME
+    </button>
+  </div>
+
+  <div class="small" style="margin-top:20px">
+    ♥ MADE WITH LOVE ♥
+  </div>
+</main>
+
+<script>
+let stage = -1;
+let noCount = 0;
+
+const message = document.getElementById("message");
+const buttons = document.getElementById("buttons");
+
+function startGame() {
+  stage = 0;
+  showQuestion("DO YOU LOVE ME? 🥺");
+}
+
+function showQuestion(question) {
+  message.innerHTML = question;
+  buttons.innerHTML = `
+    <button class="yes" onclick="answerYes()">YES ♥</button>
+    <button class="no" id="noBtn" onclick="answerNo()">NO 💔</button>
+  `;
+}
+
+function answerYes() {
+  if (stage === 0) {
+    message.innerHTML =
+      "I KNEW YOU REALLY LOVE ME!! 🥹💗";
+  } else {
+    message.innerHTML =
+      "SO YOU ACTUALLY LOVE ME!!<br><br> I KNEW ITTT!! 💗";
+  }
+  showFinal();
+}
+
+function answerNo() {
+  noCount++;
+
+  if (stage === 0) {
+    stage = 1;
+    showQuestion("WAIT... YOU DON'T LOVE ME? 😭");
+    return;
+  }
+
+  if (stage === 1) {
+    stage = 2;
+    showQuestion("SO YOU ACTUALLY HATE ME?! 💔");
+    return;
+  }
+
+  if (noCount >= 3) {
+    message.innerHTML =
+      "AFTER 11 MONTHS?!<br>MY HEART IS BROKEN 😭";
+  } else {
+    message.innerHTML =
+      "ARE YOU SERIOUS RIGHT NOW?! 😭";
+  }
+
+  makeNoRun();
+}
+
+function makeNoRun() {
+  const btn = document.getElementById("noBtn");
+  if (!btn) return;
+
+  btn.classList.add("running");
+
+  btn.onclick = () => {
+    btn.style.left = Math.random() * 65 + 15 + "%";
+    btn.style.top = Math.random() * 65 + "px";
+    answerNo();
+  };
+}
+
+function showFinal() {
+  buttons.innerHTML = `
+    <div style="font-size:35px">💖✨💖</div>
+    <p class="small">ACHIEVEMENT UNLOCKED!</p>
+    <button class="yes" onclick="loveLetter()">
+      OPEN GIFT ♥
+    </button>
+  `;
+  for (let i = 0; i < 35; i++) {
+    setTimeout(createHeart, i * 100);
+  }
+}
+
+function loveLetter() {
+  message.innerHTML =
+    "HAPPY 11 MONTHS BABY!! 💗<br><br>" +
+    "THANK YOU FOR BEING MY FAVORITE PERSON." +
+    "<br><br>11 MONTHS DOWN... FOREVER TO GO! ♥";
+  buttons.innerHTML = `
+    <div style="font-size:35px">💕🥹💕</div>
+    <p class="small">YOU ARE MY FAVORITE PLAYER.</p>
+  `;
+  for (let i = 0; i < 30; i++) {
+    setTimeout(createHeart, i * 100);
+  }
+}
+
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.className = "floating";
+  heart.innerHTML = ["💗","💕","💖","♥"][Math.floor(Math.random()*4)];
+  heart.style.left = Math.random()*100 + "vw";
+  document.getElementById("hearts").appendChild(heart);
+  setTimeout(() => heart.remove(), 3000);
+}
+</script>
+</body>
+</html>
